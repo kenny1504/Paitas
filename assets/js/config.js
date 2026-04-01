@@ -1,4 +1,4 @@
-export const SITE_BASE_URL = "";
+export const SITE_BASE_URL = "https://radiofuturanicaragua.com";
 
 export const APP_PATHS = {
   clientIndex: "/clientes/data/index.json",
