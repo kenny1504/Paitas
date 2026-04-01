@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radio Futura | Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/tailwind.generated.css">
+  <style>
+    :root {
+      --bg: #d4e5f7;
+      --panel: rgba(248, 251, 255, 0.86);
+      --panel-strong: rgba(244, 249, 255, 0.94);
+      --line: rgba(53, 111, 186, 0.14);
+      --line-strong: rgba(233, 185, 63, 0.28);
+      --text: #14365c;
+      --muted: #58708e;
+      --accent: #1f5faa;
+      --warm: #e0ab2f;
+      --shadow: 0 24px 52px rgba(60, 104, 163, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Outfit", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(86, 163, 236, 0.2), transparent 22%),
+        radial-gradient(circle at top right, rgba(241, 197, 88, 0.12), transparent 16%),
+        linear-gradient(180deg, #e7f1fb 0%, #d4e5f7 45%, #cddff2 100%);
+      animation: page-fade-in 520ms ease both;
+    }
+
+    .topbar {
+      background: rgba(243, 248, 255, 0.72);
+      border-bottom: 1px solid rgba(53, 111, 186, 0.08);
+      backdrop-filter: blur(12px);
+      animation: slide-down 420ms ease both;
+    }
+
+    .topbar__inner,
+    .page-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar__inner {
+      min-height: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .topbar__brand {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .topbar__nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar__nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 16px;
+      border: 1px solid rgba(31, 95, 170, 0.12);
+      border-radius: 999px;
+      background: rgba(245, 250, 255, 0.72);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      font-family: inherit;
+      white-space: nowrap;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+      cursor: pointer;
+    }
+
+    .topbar__nav-link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(31, 95, 170, 0.22);
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .topbar__nav-link.is-active {
+      background: linear-gradient(135deg, #1f5faa 0%, #2e70c0 100%);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 12px 24px rgba(31, 95, 170, 0.16);
+    }
+
+    .topbar__nav-link--logout {
+      background: rgba(229, 69, 84, 0.14);
+      border-color: rgba(214, 47, 71, 0.28);
+      color: #b42336;
+    }
+
+    .topbar__nav-link--logout:hover {
+      background: rgba(214, 47, 71, 0.18);
+      border-color: rgba(214, 47, 71, 0.4);
+    }
+
+    .topbar__logo {
+      display: block;
+      width: min(150px, 100%);
+      height: auto;
+    }
+
+    .topbar__logo--secondary {
+      width: min(138px, 100%);
+    }
+
+    .page-shell {
+      padding: 36px 0 56px;
+      animation: rise-in 520ms ease both;
+    }
+
+    .hero {
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.5), transparent 18%),
+        linear-gradient(135deg, rgba(245, 250, 255, 0.92), rgba(219, 236, 252, 0.88) 62%, rgba(168, 210, 247, 0.76) 100%);
+      box-shadow: var(--shadow);
+      animation: rise-in 520ms ease both;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 248, 228, 0.92);
+      color: #c33d18;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: "Space Grotesk", sans-serif;
+      margin: 0;
+    }
+
+    .hero h1 {
+      margin-top: 18px;
+      font-size: clamp(2.2rem, 4vw, 3.8rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 60ch;
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.55;
+    }
+
+    .section {
+      margin-top: 26px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: linear-gradient(145deg, rgba(245, 250, 255, 0.88), rgba(233, 243, 253, 0.82));
+      box-shadow: var(--shadow);
+      animation: rise-in 560ms ease both;
+    }
+
+    .section__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .section__label {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .section__hint {
+      margin: 0;
+      color: var(--muted);
+      max-width: 42ch;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .executive-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 20px;
+      align-items: center;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(246, 250, 255, 0.84), rgba(238, 246, 255, 0.8));
+      box-shadow: 0 18px 38px rgba(60, 104, 163, 0.1);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      animation: rise-in 600ms ease both;
+    }
+
+    .executive-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(31, 95, 170, 0.22);
+      box-shadow: 0 22px 42px rgba(60, 104, 163, 0.14);
+    }
+
+    .executive-card__link {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: 26px;
+    }
+
+    .executive-card__media {
+      position: relative;
+      z-index: 2;
+    }
+
+    .executive-card__media::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 248, 228, 0.92), rgba(212, 231, 250, 0.9));
+      z-index: 0;
+    }
+
+    .executive-card__image {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 24px;
+      border: 1px solid rgba(53, 111, 186, 0.12);
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 14px 30px rgba(60, 104, 163, 0.12);
+    }
+
+    .executive-card__body {
+      min-width: 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .executive-card__badge {
+      display: inline-flex;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line-strong);
+      background: rgba(255, 248, 228, 0.92);
+      color: var(--warm);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .executive-card__name {
+      margin-top: 18px;
+      font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+      line-height: 1.08;
+    }
+
+    .executive-card__role {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .executive-card__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      margin-top: 18px;
+      padding: 0 18px;
+      border: 1px solid rgba(31, 95, 170, 0.14);
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1f5faa 0%, #2e70c0 100%);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 12px 24px rgba(31, 95, 170, 0.18);
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .executive-card__button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px rgba(31, 95, 170, 0.22);
+    }
+
+    @media (max-width: 820px) {
+      .topbar__inner {
+        flex-direction: column;
+        justify-content: center;
+        padding: 12px 0;
+      }
+
+      .topbar__brand {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section__header {
+        flex-direction: column;
+      }
+
+      .section__hint {
+        text-align: left;
+      }
+
+      .executive-card {
+        grid-template-columns: 96px minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar__inner {
+        min-height: 58px;
+      }
+
+      .topbar__logo {
+        width: 128px;
+      }
+
+      .page-shell {
+        width: min(100% - 20px, 1180px);
+        padding: 22px 0 38px;
+      }
+
+      .hero,
+      .section,
+      .executive-card {
+        border-radius: 24px;
+      }
+
+      .hero,
+      .section {
+        padding: 22px;
+      }
+
+      .executive-card {
+        grid-template-columns: 1fr;
+      }
+
+      .executive-card__media {
+        max-width: 180px;
+      }
+    }
+
+    @keyframes page-fade-in {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slide-down {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="topbar__brand">
+        <img
+          data-site-asset="futuraLogo"
+          alt="Radio Futura"
+          class="topbar__logo"
+        >
+        <img
+          data-site-asset="tuSpotLogo"
+          alt="Tu Spot en la Radio"
+          class="topbar__logo topbar__logo--secondary"
+        >
+      </div>
+      <nav class="topbar__nav" aria-label="Navegacion principal">
+        <a href="./Home.html" class="topbar__nav-link is-active">Home</a>
+        <button id="logoutButton" type="button" class="topbar__nav-link topbar__nav-link--logout">Cerrar sesion</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <span class="eyebrow">Directorio comercial</span>
+      <h1>Home</h1>
+      <p>
+        Consulta los ejecutivos comerciales disponibles y visualiza de forma clara sus datos principales dentro de una vista rapida.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section__header">
+        <div>
+          <p class="section__label">Equipo</p>
+          <h2>Ejecutivos</h2>
+        </div>
+        <p class="section__hint">
+          Vista inicial para identificar a los responsables del area comercial.
+        </p>
+      </div>
+
+      <div class="cards-grid">
+        <article class="executive-card" data-owner-phone="50578793255" data-executive-name="Lic. Sergio Hernandez">
+          <a href="./clients.html?ownerPhone=50578793255&executive=Lic.%20Sergio%20Hernandez" class="executive-card__link" aria-label="Abrir clientes de Lic. Sergio Hernandez"></a>
+          <div class="executive-card__media">
+            <img
+              data-site-asset="sergioPhoto"
+              alt="Lic. Sergio Hernandez"
+              class="executive-card__image"
+            >
+          </div>
+          <div class="executive-card__body">
+            <span class="executive-card__badge">Ejecutivo</span>
+            <h3 class="executive-card__name">Lic. Sergio Hernandez</h3>
+            <p class="executive-card__role">Ejecutiva Comercial</p>
+            <a href="./clients.html?ownerPhone=50578793255&executive=Lic.%20Sergio%20Hernandez" class="executive-card__button">Gestionar clientes</a>
+          </div>
+        </article>
+
+        <article class="executive-card" data-owner-phone="50584992075" data-executive-name="Lic. Jaquelin Zeledon">
+          <a href="./clients.html?ownerPhone=50584992075&executive=Lic.%20Jaquelin%20Zeledon" class="executive-card__link" aria-label="Abrir clientes de Lic. Jaquelin Zeledon"></a>
+          <div class="executive-card__media">
+            <img
+              data-site-asset="jaquelinPhoto"
+              alt="Lic. Jaquelin Zeledon"
+              class="executive-card__image"
+            >
+          </div>
+          <div class="executive-card__body">
+            <span class="executive-card__badge">Ejecutivo</span>
+            <h3 class="executive-card__name">Lic. Jaquelin Zeledon</h3>
+            <p class="executive-card__role">Ejecutiva Comercial</p>
+            <a href="./clients.html?ownerPhone=50584992075&executive=Lic.%20Jaquelin%20Zeledon" class="executive-card__button">Gestionar clientes</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./assets/js/auth-nav.js"></script>
+  <script type="module" src="./assets/js/home.js"></script>
+  <script type="module" src="./assets/js/site-assets.js"></script>
+</body>
+</html>

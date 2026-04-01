@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Spots por Cliente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/tailwind.generated.css">
+  <link rel="stylesheet" href="./assets/css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader hidden" aria-live="polite" aria-busy="true">
+    <div class="page-loader__content">
+      <span class="page-loader__spinner"></span>
+      <strong id="pageLoaderText">Cargando informacion...</strong>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="topbar__brand">
+        <img
+          data-site-asset="futuraLogo"
+          alt="Radio Futura"
+          class="topbar__logo"
+        >
+        <img
+          data-site-asset="tuSpotLogo"
+          alt="Tu Spot en la Radio"
+          class="topbar__logo topbar__logo--secondary"
+        >
+      </div>
+      <nav class="topbar__nav" aria-label="Navegacion principal">
+        <a id="navEjecutivos" href="./Home.html" class="topbar__nav-link">Home</a>
+        <a id="navClientes" href="./clients.html" class="topbar__nav-link">Clientes</a>
+        <a href="./dashboard_spots_demo.html" class="topbar__nav-link is-active">Dashboard</a>
+        <button id="logoutButton" type="button" class="topbar__nav-link topbar__nav-link--logout">Cerrar sesion</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Monitoreo comercial</p>
+        <h1>Dashboard de Spots </h1>
+        <p class="hero__description">
+          Analiza detecciones por rango de fechas, revisa comportamiento diario y encuentra rapido los spots mas activos.
+        </p>
+      </div>
+
+      <aside class="hero__highlight">
+        <strong>Interfaz organizada</strong>
+        <p>Administracion de los diversos Spots.</p>
+      </aside>
+    </header>
+
+    <main class="dashboard-layout">
+      <section class="panel panel--filters">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Consulta</p>
+            <h2>Filtros del dashboard</h2>
+          </div>
+          <p class="panel__hint">Selecciona un cliente y el rango a consolidar.</p>
+        </div>
+
+        <div class="filters-grid">
+          <div class="field field--search">
+            <label for="clienteSearchInput">Buscar cliente</label>
+            <div class="search-box">
+              <input id="clienteSearchInput" type="text" placeholder="Escribe nombre o telefono" autocomplete="off">
+              <button id="limpiarBusquedaBtn" type="button" class="ghost-icon" aria-label="Limpiar busqueda">x</button>
+              <div id="clienteDropdown" class="dropdown hidden"></div>
+            </div>
+            <select id="clienteInput" class="hidden-accessible"></select>
+          </div>
+
+          <div class="field">
+            <label for="desdeInput">Desde</label>
+            <input id="desdeInput" type="date">
+          </div>
+
+          <div class="field">
+            <label for="hastaInput">Hasta</label>
+            <input id="hastaInput" type="date">
+          </div>
+
+          <div class="field field--action">
+            <button id="cargarBtn" type="button" class="primary-button">Cargar dashboard</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="clienteCard" class="panel panel--client">
+        <div>
+          <p class="section-label">Cliente seleccionado</p>
+          <div class="client-heading">
+            <h2 id="clienteCardNombre">--</h2>
+            <span id="clienteCardRango" class="pill">Sin rango seleccionado</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Ficha del cliente</p>
+            <h2>Informacion relevante</h2>
+          </div>
+          <p class="panel__hint">Resumen independiente del dashboard operativo.</p>
+        </div>
+        <div class="client-summary-grid">
+          <article class="client-summary-card client-summary-card--accent">
+            <span>Cliente</span>
+            <strong id="clienteResumenNombre">--</strong>
+            <p>Nombre comercial del cliente actualmente seleccionado.</p>
+          </article>
+
+          <article class="client-summary-card">
+            <span>Rango consultado</span>
+            <strong id="clienteResumenRango">Sin rango</strong>
+            <p>Periodo sobre el cual se esta consolidando la informacion.</p>
+          </article>
+
+          <article class="client-summary-card">
+            <span>Spot principal</span>
+            <strong id="clienteResumenTopSpot">Sin datos</strong>
+            <p>Spot con mayor presencia dentro del rango seleccionado.</p>
+          </article>
+
+          <article class="client-summary-card">
+            <span>Actividad</span>
+            <strong id="clienteResumenActividad">0%</strong>
+            <p>Porcentaje de dias con registros validos dentro del periodo.</p>
+          </article>
+        </div>
+      </section>
+
+      <div id="alerta" class="alert hidden"></div>
+
+      <section class="dashboard-section-heading">
+        <p class="section-label">Dashboard</p>
+        <h2>Rendimiento del cliente</h2>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat-card stat-card--accent">
+          <span>Total spots</span>
+          <strong id="kpiTotalSpots">0</strong>
+          <p>Conteo total dentro del rango consultado.</p>
+        </article>
+
+        <article class="stat-card">
+          <span>Dias con datos</span>
+          <strong id="kpiDiasConDatos">0</strong>
+          <p>Fechas donde se detecto informacion valida.</p>
+        </article>
+
+        <article class="stat-card">
+          <span>Dias sin datos</span>
+          <strong id="kpiDiasSinDatos">0</strong>
+          <p>Fechas sin archivo o sin registros disponibles.</p>
+        </article>
+
+        <article class="stat-card">
+          <span>Promedio diario</span>
+          <strong id="kpiPromedioDiario">0</strong>
+          <p>Promedio de spots por dia en el periodo.</p>
+        </article>
+      </section>
+
+      <section class="visual-grid">
+        <article class="panel chart-panel">
+          <div class="panel__header">
+            <div>
+              <p class="section-label">Tendencia</p>
+              <h2>Spots por dia</h2>
+            </div>
+            <span id="rangoLabel" class="panel__hint"></span>
+          </div>
+          <div class="chart-slot">
+            <canvas id="chartDiario"></canvas>
+          </div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel__header">
+            <div>
+              <p class="section-label">Distribucion</p>
+              <h2>Detecciones por hora</h2>
+            </div>
+          </div>
+          <div class="chart-slot">
+            <canvas id="chartHora"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="tables-grid">
+        <article class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="section-label">Ranking</p>
+              <h2>Top spots detectados</h2>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Spot</th>
+                  <th class="align-right">Total</th>
+                  <th class="align-right">%</th>
+                </tr>
+              </thead>
+              <tbody id="tablaTopSpots"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel__header">
+            <div>
+              <p class="section-label">Duracion</p>
+              <h2>Duracion promedio por spot</h2>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Spot</th>
+                  <th class="align-right">Promedio</th>
+                </tr>
+              </thead>
+              <tbody id="tablaDuraciones"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Consolidado</p>
+            <h2>Detalle de detecciones</h2>
+          </div>
+          <div class="panel__actions">
+            <span id="estadoCarga" class="panel__hint">Sin cargar</span>
+            <button id="exportarExcelBtn" type="button" class="secondary-button" disabled>
+              Exportar Excel
+            </button>
+          </div>
+        </div>
+        <div class="table-shell table-shell--tall">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Spot</th>
+                <th class="align-right">Duracion</th>
+              </tr>
+            </thead>
+            <tbody id="tablaDetalles"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./assets/js/app.js"></script>
+  <script type="module" src="./assets/js/auth-nav.js"></script>
+  <script type="module" src="./assets/js/site-assets.js"></script>
+</body>
+</html>

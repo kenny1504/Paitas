@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes por Ejecutivo | Radio Futura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/tailwind.generated.css">
+  <link rel="stylesheet" href="./assets/css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <div id="pageLoader" class="page-loader hidden" aria-live="polite" aria-busy="true">
+    <div class="page-loader__content">
+      <span class="page-loader__spinner"></span>
+      <strong id="pageLoaderText">Cargando informacion...</strong>
+    </div>
+  </div>
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <div class="topbar__brand">
+        <img
+          data-site-asset="futuraLogo"
+          alt="Radio Futura"
+          class="topbar__logo"
+        >
+        <img
+          data-site-asset="tuSpotLogo"
+          alt="Tu Spot en la Radio"
+          class="topbar__logo topbar__logo--secondary"
+        >
+      </div>
+      <nav class="topbar__nav" aria-label="Navegacion principal">
+        <a id="navEjecutivos" href="./Home.html" class="topbar__nav-link">Home</a>
+        <a href="./clients.html" class="topbar__nav-link is-active">Clientes</a>
+        <a id="navDashboard" href="./dashboard_spots_demo.html" class="topbar__nav-link">Dashboard</a>
+        <button id="logoutButton" type="button" class="topbar__nav-link topbar__nav-link--logout">Cerrar sesion</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Cartera comercial</p>
+        <h1>Clientes del ejecutivo</h1>
+        <p id="clientsHeroDescription" class="hero__description">
+          Selecciona un cliente para abrir su dashboard individual con informacion relevante y rendimiento del periodo.
+        </p>
+      </div>
+
+      <aside class="hero__highlight">
+        <span class="hero__highlight-label">Vista de clientes</span>
+        <strong id="executiveTitle">Ejecutivo no definido</strong>
+        <p id="clientsCountText">Cargando clientes asignados...</p>
+      </aside>
+    </header>
+
+    <main class="dashboard-layout">
+      <section class="panel">
+        <div class="panel__header">
+          <div>
+            <p class="section-label">Clientes</p>
+            <h2>Selecciona un cliente</h2>
+          </div>
+          <div class="panel__actions">
+            <p id="clientesResumen" class="panel__hint">Sin clientes cargados</p>
+            <button id="exportarClientesBtn" type="button" class="secondary-button" disabled>
+              Exportar Excel
+            </button>
+          </div>
+        </div>
+        <div class="field field--search field--clients-search">
+          <label for="clientesSearchInput">Buscar cliente</label>
+          <div class="search-box">
+            <input id="clientesSearchInput" type="text" placeholder="Escribe el nombre del cliente" autocomplete="off">
+            <button id="limpiarClientesSearchBtn" type="button" class="ghost-icon" aria-label="Limpiar busqueda">x</button>
+          </div>
+        </div>
+        <div id="alerta" class="alert hidden"></div>
+        <div id="clientesGrid" class="clients-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./assets/js/clients.js"></script>
+  <script type="module" src="./assets/js/auth-nav.js"></script>
+  <script type="module" src="./assets/js/site-assets.js"></script>
+</body>
+</html>
