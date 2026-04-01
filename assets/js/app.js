@@ -1,5 +1,6 @@
 import { fetchClients, fetchDashboardRange } from "./api.js";
 import { buildClientDashboardUrl, getSession, requireAuth } from "./auth.js";
+import { closeReelPlayer, findReelForTimestamp, playReelInContainer, preloadReelsForDates } from "./reels.js";
 import {
   bindEvents,
   clearSearch,
@@ -44,6 +45,9 @@ async function initialize() {
   const today = new Date();
   const previousWindow = new Date();
   previousWindow.setDate(today.getDate() - 29);
+
+  window.addEventListener("pagehide", closeReelPlayer);
+  window.addEventListener("beforeunload", closeReelPlayer);
 
   dom.startDateInput.value = toInputDate(previousWindow);
   dom.endDateInput.value = toInputDate(today);
@@ -108,6 +112,8 @@ async function initialize() {
 }
 
 async function loadDashboard() {
+  closeReelPlayer();
+
   const client = (dom.clientInput.value || "").trim().toLowerCase();
   const startDate = dom.startDateInput.value;
   const endDate = dom.endDateInput.value;
@@ -128,8 +134,9 @@ async function loadDashboard() {
   try {
     const results = await fetchDashboardRange(client, startDate, endDate);
     const dashboard = buildDashboard(client, startDate, endDate, results);
+    await attachReelsToDashboard(dashboard);
     state.currentDashboard = dashboard;
-    renderDashboard(dom, dashboard);
+    renderDashboard(dom, dashboard, handlePlayReel);
     setExportEnabled(dom, dashboard.details.length > 0);
   } catch (error) {
     console.error(error);
@@ -179,6 +186,8 @@ function buildDashboard(client, startDate, endDate, results) {
       details.push({
         date: item.date,
         hour: timestamp.split(" ")[1] || "",
+        timestamp,
+        stream: detection.stream || "",
         spot,
         duration
       });
@@ -237,6 +246,21 @@ function buildDashboard(client, startDate, endDate, results) {
     durations,
     details
   };
+}
+
+async function attachReelsToDashboard(dashboard) {
+  const dates = dashboard.details.map((detail) => detail.date);
+  await preloadReelsForDates(dates);
+
+  dashboard.details = dashboard.details.map((detail) => {
+    const reel = findReelForTimestamp(detail.date, detail.timestamp);
+
+    return {
+      ...detail,
+      reelFile: reel?.file || "",
+      reelUrl: reel?.url || ""
+    };
+  });
 }
 
 function getCurrentClient() {
@@ -335,4 +359,12 @@ function exportDetailsToExcel() {
   const fileClient = dashboard.client.replaceAll(" ", "_");
   const fileName = `detalle_spots_${fileClient}_${dashboard.startDate}_${dashboard.endDate}.xlsx`;
   XLSX.writeFile(workbook, fileName);
+}
+
+function handlePlayReel(payload) {
+  if (!payload?.file) {
+    return;
+  }
+
+  playReelInContainer(dom.reelPlayer, payload.date, payload.file, payload.timestamp);
 }

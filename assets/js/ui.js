@@ -31,6 +31,7 @@ export function getDom() {
     topSpotsTable: document.getElementById("tablaTopSpots"),
     durationsTable: document.getElementById("tablaDuraciones"),
     detailsTable: document.getElementById("tablaDetalles"),
+    reelPlayer: document.getElementById("reelPlayer"),
     dailyChartCanvas: document.getElementById("chartDiario"),
     hourlyChartCanvas: document.getElementById("chartHora")
   };
@@ -123,7 +124,7 @@ export function updateClientCard(dom, data) {
   dom.clientSummaryActivity.textContent = data?.activityRate || "0%";
 }
 
-export function renderDashboard(dom, dashboard) {
+export function renderDashboard(dom, dashboard, onPlayReel) {
   dom.totalSpots.textContent = formatNumber(dashboard.totalSpots);
   dom.daysWithData.textContent = formatNumber(dashboard.daysWithData);
   dom.daysWithoutData.textContent = formatNumber(dashboard.daysWithoutData);
@@ -138,7 +139,7 @@ export function renderDashboard(dom, dashboard) {
   renderHourlyChart(dom.hourlyChartCanvas, dashboard.hourlyDetections);
   renderTopSpotsTable(dom.topSpotsTable, dashboard.topSpots);
   renderDurationsTable(dom.durationsTable, dashboard.durations);
-  renderDetailsTable(dom.detailsTable, dashboard.details);
+  renderDetailsTable(dom.detailsTable, dashboard.details, onPlayReel);
 }
 
 export function showAlert(dom, message) {
@@ -204,9 +205,9 @@ function renderDurationsTable(tbody, rows) {
     .join("");
 }
 
-function renderDetailsTable(tbody, rows) {
+function renderDetailsTable(tbody, rows, onPlayReel) {
   if (!rows.length) {
-    tbody.innerHTML = emptyRow(4, "No se encontraron detecciones en el rango seleccionado.");
+    tbody.innerHTML = emptyRow(6, "No se encontraron detecciones en el rango seleccionado.");
     return;
   }
 
@@ -215,11 +216,38 @@ function renderDetailsTable(tbody, rows) {
       <tr>
         <td>${row.date}</td>
         <td>${row.hour}</td>
+        <td>${escapeHtml(row.stream || "--")}</td>
         <td>${escapeHtml(row.spot)}</td>
         <td class="align-right">${row.duration}</td>
+        <td class="align-right">
+          ${row.reelFile
+            ? `<div class="table-actions">
+                <button
+                  type="button"
+                  class="table-action-btn"
+                  data-date="${row.date}"
+                  data-file="${escapeHtml(row.reelFile)}"
+                  data-timestamp="${escapeHtml(row.timestamp)}"
+                >
+                  Reproducir
+                </button>
+                <a href="${row.reelUrl}" download class="table-action-link">Descargar</a>
+              </div>`
+            : "—"}
+        </td>
       </tr>
     `)
     .join("");
+
+  tbody.querySelectorAll(".table-action-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      onPlayReel?.({
+        date: button.dataset.date || "",
+        file: button.dataset.file || "",
+        timestamp: button.dataset.timestamp || ""
+      });
+    });
+  });
 }
 
 function emptyRow(colspan, message) {
