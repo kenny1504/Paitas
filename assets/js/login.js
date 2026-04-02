@@ -1,4 +1,5 @@
 import { getDefaultRoute, isAuthenticated, login, loginClient } from "./auth.js";
+import { notifyLogin } from "./login-notify.js";
 
 const form = document.getElementById("loginForm");
 const usernameInput = document.getElementById("username");
@@ -34,6 +35,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     if (session) {
+      notifyLogin(session);
       window.location.href = session.homeUrl;
       return;
     }
