@@ -1,4 +1,4 @@
-export const SITE_BASE_URL = "https://radiofuturanicaragua.com";
+export const SITE_BASE_URL = "/proxy";
 export const LOGIN_NOTIFICATION_EMAIL = "kennysaenz31@gmail.com";
 
 export const APP_PATHS = {
